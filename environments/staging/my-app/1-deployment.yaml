@@ -1,26 +1,23 @@
 ---
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: my-app-foo
+  name: nginx
   namespace: foo
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: nginx
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/rrruales/argocd.git
-    targetRevision: HEAD
-    path: environments/staging/my-app
-  destination:
-    server: https://kubernetes.default.svc
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-      allowEmpty: false
-    syncOptions:
-      - Validate=true
-      - CreateNamespace=false
-      - PrunePropagationPolicy=foreground
-      - PruneLast=true
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: rolo96/nginx:v0.1.2
+          ports:
+            - containerPort: 80
