@@ -9,4 +9,18 @@ metadata:
 spec:
   project: default
   source:
-    repoURL
+    repoURL: https://github.com/rrruales/argocd.git
+    targetRevision: HEAD
+    path: environments/staging/my-app
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=false
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
